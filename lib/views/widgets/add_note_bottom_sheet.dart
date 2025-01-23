@@ -7,30 +7,68 @@ class AddNoteButtomModelSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 32,
-            ),
-            CustomTextField(
-              hint: 'title',
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            CustomTextField(
-              maxlines: 5,
-              hint: 'content',
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            CustomButton(),
-          ],
-        ),
+        child: AddNoteForm(),
+      ),
+    );
+  }
+}
+
+class AddNoteForm extends StatefulWidget {
+  const AddNoteForm({
+    super.key,
+  });
+
+  @override
+  State<AddNoteForm> createState() => _AddNoteFormState();
+}
+
+class _AddNoteFormState extends State<AddNoteForm> {
+  final GlobalKey<FormState> fromKey = GlobalKey();
+  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  String? title, subtitle;
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: fromKey,
+      autovalidateMode: autovalidateMode,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 32,
+          ),
+          CustomTextField(
+            onSaved: (value) {
+              title = value;
+            },
+            hint: 'title',
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          CustomTextField(
+            maxlines: 5,
+            onSaved: (value) {
+              subtitle = value;
+            },
+            hint: 'content',
+          ),
+          SizedBox(
+            height: 32,
+          ),
+          CustomButton(
+            onTap: () {
+              if (fromKey.currentState!.validate()) {
+                fromKey.currentState!.save();
+              } else {
+                autovalidateMode = AutovalidateMode.always;
+                setState(() {});
+              }
+            },
+          ),
+        ],
       ),
     );
   }
